@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+todovnv/
+myvenv/
+
+
+# VSCode / IDE files
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# MacOS
+.DS_Store
+
+# Logs
+*.log
