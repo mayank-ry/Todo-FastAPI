@@ -19,8 +19,13 @@ class UserBase(BaseModel):
     email: str
     name: str
 
-class UserCreate(UserBase):
-    pass
+class UserRegister(UserBase):
+    email : str
+    password : str
+    
+class UserLogin(UserBase):
+    email : str
+    password : str
 
 class User(UserBase):
     id: int
