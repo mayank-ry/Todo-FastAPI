@@ -1,4 +1,3 @@
-# database.py
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -9,16 +8,16 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Create the engine (talks to DB)
-engine = create_engine(DATABASE_URL)
+# Create engine
+engine = create_engine(DATABASE_URL)  # type: ignore
 
-# SessionLocal: actual session class bound to engine
+# Session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base: used for creating ORM models
+# Base class for models
 Base = declarative_base()
 
-# Dependency for getting DB session inside routes
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
