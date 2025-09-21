@@ -1,6 +1,5 @@
-# schemas.py
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 class ItemBase(BaseModel):
     title: str
@@ -15,21 +14,25 @@ class Item(ItemBase):
     class Config:
         orm_mode = True
 
+# Base user schema
 class UserBase(BaseModel):
     email: str
-    name: str
 
+# For registration (input only)
 class UserRegister(UserBase):
-    email : str
-    password : str
-    
-class UserLogin(UserBase):
-    email : str
-    password : str
+    username: str
+    password: str
 
-class User(UserBase):
-    id: int
-    items: List[Item] = []
+# For login (input only)
+class UserLogin(UserBase):
+    email: str
+    password: str
+
+# For output (response)
+class UserOut(BaseModel):
+    user_id: int
+    username: str
+    email: str
 
     class Config:
         orm_mode = True

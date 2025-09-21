@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Date, TIMESTAMP, func
 from sqlalchemy.orm import relationship
-from database import Base
+from database import Base # type: ignore
 
 # Users Table
 class User(Base):
@@ -9,7 +9,7 @@ class User(Base):
     user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
-    password_hash = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
     # Relationship to tasks
@@ -26,6 +26,7 @@ class Task(Base):
     status = Column(Enum("pending", "in_progress", "completed", name="task_status"), default="pending")
     priority = Column(Enum("low", "medium", "high", name="task_priority"), default="medium")
     due_date = Column(Date, nullable=True)
+    attachment_url = Column(String, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
