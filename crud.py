@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from passlib.context import CryptContext
 import models, schemas
+from fastapi import HTTPException
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -13,10 +14,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.user_id == user_id).first() # type: ignore
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first() # type: ignore
+    return db.query(models.User).filter(models.User.email == email).first()
 
 def register_user(db: Session, user: schemas.UserRegister):
     db_user = models.User(
@@ -33,16 +34,45 @@ def register_user(db: Session, user: schemas.UserRegister):
         db.rollback()
         raise
 
-def create_item_for_user(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id) # type: ignore
+def create_task(db: Session, task: schemas.TaskCreate, user_id: int):
+    db_task = models.Task(title = task.title, desc = task.desc, user_id = user_id)
     try:
-        db.add(db_item)
+        db.add(db_task)
         db.commit()
-        db.refresh(db_item)
-        return db_item
+        db.refresh(db_task)
+        return db_task
     except SQLAlchemyError:
         db.rollback()
         raise
+
+def update_task(db: Session, task_id: int, task_update: schemas.TaskCreate):
+    db_task = db.query(models.Task).filter(models.Task.task_id == task_id).first()
+    if not db_task:
+        raise HTTPException(404)
+    for key, value in task_update.dict(exclude_unset=True).items():
+        setattr(db_task, key, value)
+    try:
+        db.commit()
+        db.refresh(db_task)
+        return db_task
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+
+def delete_task(db: Session, task_id: int):
+    db_task = db.query(models.Task).filter(models.Task.task_id == task_id).first()
+    if not db_task:
+        raise HTTPException(404)
+    try:
+        db.delete(db_task)
+        db.commit()
+        return db_task
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+
+def get_tasks(db: Session, user_id: int):
+    return db.query(models.Task).filter(models.Task.user_id == user_id).all()
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
