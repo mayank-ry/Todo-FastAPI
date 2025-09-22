@@ -1,15 +1,26 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from datetime import date
 
-class ItemBase(BaseModel):
+class TaskBase(BaseModel):
     title: str
+    desc: Optional[str] = None
+    status: Optional[str] = "pending"
+    priority: Optional[str] = "medium"
+    due_date: Optional[date] = None
+    attachment_url: Optional[str] = None
 
-class ItemCreate(ItemBase):
+class TaskCreate(TaskBase):
     pass
 
-class Item(ItemBase):
-    id: int
-    owner_id: int
+class TaskUpdate(TaskBase):
+    pass 
+
+
+
+class Task(TaskBase):
+    task_id: int
+    user_id: int
 
     class Config:
         orm_mode = True

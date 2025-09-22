@@ -23,7 +23,7 @@ def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
 
 @app.post("/login", response_model=schemas.UserOut)
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
-    db_user = crud.authenticate_user(db, user.email, user.password) # type: ignore
+    db_user = crud.authenticate_user(db, user.email, user.password)
     if not db_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return db_user
