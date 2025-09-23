@@ -47,3 +47,9 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+#token schema updated author mayank
+class Token(BaseModel):
+    access_token:str
+    token_type:str
+
